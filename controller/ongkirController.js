@@ -1,6 +1,6 @@
 const { db, dbQuery } = require("../config");
 var RajaOngkir = require("rajaongkir-nodejs").Starter(
-  "21c780563c3c38169f3ba5587d55692b"
+  "63b5cc834bb0e38090a2b629da2ca394"
 );
 
 module.exports = {
