@@ -52,8 +52,8 @@ module.exports = {
   },
   getData: async (req, res, next) => {
     try {
-      getSQL = `select sp.idstatus_pengiriman,sp.resi,s.desc_status,d.nama_penerima from status_pengiriman sp 
-        join data d on sp.resi = d.resi join status s on sp.idstatus = s.idstatus`;
+      getSQL = `select sp.idstatus_pengiriman,sp.iddata,s.desc_status,d.nama_penerima,d.resi from status_pengiriman sp 
+        join data d on sp.iddata = d.iddata join status s on sp.idstatus = s.idstatus`;
 
       let get = await dbQuery(getSQL);
       res.status(200).send(get);
