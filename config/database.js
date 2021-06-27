@@ -3,8 +3,8 @@ const util = require("util");
 
 const db = mysql.createPool({
   host: "localhost",
-  user: "mrakhalf",
-  password: "q1r58sv4123",
+  user: "slthnsf",
+  password: "tamaninduk44",
   database: "ekspedisi",
   port: 3306,
   multipleStatements: true,
