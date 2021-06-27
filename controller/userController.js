@@ -72,6 +72,24 @@ module.exports = {
             next(error)
         }
     },
+    getUsersRole: async (req, res, next) => {
+        try {
+            let getSQL, dataSearch = []
+            for (let prop in req.query) {
+                dataSearch.push(`${prop} = ${db.escape(req.query[prop])}`)
+            }
+            console.log(dataSearch.join(' AND '))
+            if (dataSearch.length > 0) {
+                getSQL = `Select * from users where ${dataSearch.join(' AND ')};`
+            } else {
+                getSQL = `Select * from users where idrole = 3 ;`
+            }
+            let get = await dbQuery(getSQL)
+            res.status(200).send(get)
+        } catch (error) {
+            next(error)
+        }
+    },
     addKurir: async (req, res, next) => {
         try {
             if (req.body.email.includes('@') && req.body.password.length >= 6 && req.body.password.match(/[a-z]/ig) && req.body.password.match(/[0-9]/ig)) {
