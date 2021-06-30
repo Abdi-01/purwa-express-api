@@ -143,4 +143,33 @@ module.exports = {
       next(error);
     }
   },
+  getAllData: async (req, res, next) => {
+    try {
+      let getSQL = `Select d.*, s.desc_status from data d join status s on d.idstatus = s.idstatus`;
+      let getStatusPengiriman = `Select sp.*, s.desc_status, k.kota as asal, l.kota as tujuan, d.alamat, d.nama_penerima from status_pengiriman sp join status s on sp.idstatus = s.idstatus join data d on sp.iddata = d.iddata
+      join kota k on k.idkota = d.kota_asal join kota l on l.idkota = d.kota_penerima;`
+      let getStatus = await dbQuery(getStatusPengiriman)
+      let get = await dbQuery(getSQL);
+      get.forEach(item => {
+        item.status = []
+        getStatus.forEach(el => {
+          if(item.iddata == el.iddata){
+            item.status.push(el)
+          }
+        })
+      })
+      res.status(200).send(get);
+    } catch (error) {
+      next(error)
+    }
+  },
+  barangTerkirim: async (req, res, next) => {
+    try {
+      getSQL = `Select d.*, s.desc_status from data d join status s on d.idstatus = s.idstatus where d.idstatus = 6`;
+      let get = await dbQuery(getSQL);
+      res.status(200).send(get);
+    } catch (error) {
+      next(error)
+    }
+  }
 };
