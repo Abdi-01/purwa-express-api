@@ -44,7 +44,6 @@ module.exports = {
       )},${db.escape(idstatus)})`;
 
       pengiriman = await dbQuery(statusPengiriman);
-      console.log("check", check[0]);
       res.status(201).send(check[0]);
     } catch (error) {
       next(error);
@@ -52,8 +51,92 @@ module.exports = {
   },
   getData: async (req, res, next) => {
     try {
-      getSQL = `select sp.idstatus_pengiriman,sp.iddata,s.desc_status,d.* from status_pengiriman sp 
-        join data d on sp.iddata = d.iddata join status s on sp.idstatus = s.idstatus`;
+      let getSQL,
+        dataSearch = [];
+      for (let prop in req.query) {
+        if (prop.includes("idkota")) {
+          let a = prop;
+          const b = ["idkota"];
+          a = a.replace(new RegExp(b.join("|"), "g"), "k.idkota");
+          dataSearch.push(`${a} = ${db.escape(req.query[prop])}`);
+        } else {
+          dataSearch.push(`${prop} = ${db.escape(req.query[prop])}`);
+        }
+      }
+      if (dataSearch.length > 0) {
+        getSQL = `select sp.idstatus_pengiriman,sp.iddata,s.desc_status,d.nama_penerima,d.resi,k.kota as kota_penerima,d.idusers,l.kota as kota_asal,d.berat_barang,d.idstatus from status_pengiriman sp 
+        join data d on sp.iddata = d.iddata join status s on sp.idstatus = s.idstatus join kota k on d.kota_penerima = k.idkota join kota l on d.kota_asal = l.idkota where ${dataSearch.join(
+          " AND "
+        )}`;
+      } else {
+        getSQL = `select sp.idstatus_pengiriman,sp.iddata,s.desc_status,d.nama_penerima,d.resi,k.kota as kota_penerima,d.idusers,l.kota as kota_asal,d.berat_barang,d.idstatus from status_pengiriman sp 
+        join data d on sp.iddata = d.iddata join status s on sp.idstatus = s.idstatus join kota k on d.kota_penerima = k.idkota join kota l on d.kota_asal = l.idkota`;
+      }
+
+      let get = await dbQuery(getSQL);
+      res.status(200).send(get);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getPengirimanStatus: async (req, res, next) => {
+    try {
+      getSQL = `select p.*,d.jenis_barang,d.resi,d.tanggal_input,d.nama_pengirim,d.nama_penerima,d.alamat,d.telp_penerima,d.harga,k.kota as kota_asal,l.kota as kota_penerima,d.berat_barang,d.iddata from pengiriman p join data d on d.iddata = p.iddata join kota k on k.idkota = d.kota_asal join kota l on l.idkota=d.kota_penerima`;
+
+      let get = await dbQuery(getSQL);
+      res.status(200).send(get);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getStatusAll: async (req, res, next) => {
+    try {
+      getSQL = `select * from status_pengiriman sp join status s on sp.idstatus = s.idstatus `;
+
+      let get = await dbQuery(getSQL);
+      res.status(200).send(get);
+    } catch (error) {
+      next(error);
+    }
+  },
+  addKonfirmasi: async (req, res, next) => {
+    try {
+      let add = `Insert into konfirmasi (idpengiriman, iddata,signature,penerima)
+            values (${db.escape(req.body.idpengiriman)}, ${db.escape(
+        req.body.iddata
+      )}, ${db.escape(req.body.signature)}, ${db.escape(req.body.penerima)});`;
+
+      add = await dbQuery(add);
+
+      let check = `update pengiriman set idstatus=7 where idpengiriman=${db.escape(
+        req.body.idpengiriman
+      )}`;
+
+      check = await dbQuery(check);
+
+      let konfirmasi = `select * from konfirmasi`;
+
+      konfirmasi = await dbQuery(konfirmasi);
+
+      res.status(201).send(konfirmasi[0]);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getKonfirmasi: async (req, res, next) => {
+    try {
+      getSQL = `select * from konfirmasi k join data d on d.iddata = k.iddata join pengiriman p on p.idpengiriman = k.idpengiriman `;
+
+      let get = await dbQuery(getSQL);
+      res.status(200).send(get);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getDataInputAdmin: async (req, res, next) => {
+    try {
+      getSQL = `select * from data d join status s on d.idstatus = s.idstatus `;
+
       let get = await dbQuery(getSQL);
       res.status(200).send(get);
     } catch (error) {

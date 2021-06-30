@@ -11,7 +11,7 @@ module.exports = {
         result.rajaongkir.results.map((item) => {
           kota.push({ id: item.city_id, city: item.city_name });
         });
-        console.log(kota);
+        // console.log(kota);
         res.status(200).send(kota);
       })
       .catch(function (error) {

@@ -23,9 +23,11 @@ db.getConnection((err, connection) => {
 const { userRouter } = require("./router");
 const { ongkirRouter } = require("./router");
 const { adminRouter } = require("./router");
+const { courierRouter } = require("./router");
 app.use("/users", userRouter);
 app.use("/ongkir", ongkirRouter);
 app.use("/admin", adminRouter);
+app.use("/courier", courierRouter);
 
 // ERROR HANDLING
 app.use((error, req, res, next) => {
