@@ -135,8 +135,8 @@ module.exports = {
   },
   getDataInputAdmin: async (req, res, next) => {
     try {
-      getSQL = `select * from data d join status s on d.idstatus = s.idstatus `;
-
+      getSQL =
+        getSQL = `select d.iddata,d.jenis_barang,d.nama_pengirim,d.nama_penerima,d.idusers,d.alamat,d.berat_barang,d.harga,d.telp_penerima,d.resi,d.tanggal_input,s.*,k.kota as kota_asal,l.kota as kota_penerima from data d join status s on d.idstatus = s.idstatus join kota k on k.idkota = d.kota_asal  join kota l on l.idkota = d.kota_penerima`;
       let get = await dbQuery(getSQL);
       res.status(200).send(get);
     } catch (error) {
@@ -147,20 +147,20 @@ module.exports = {
     try {
       let getSQL = `Select d.*, s.desc_status from data d join status s on d.idstatus = s.idstatus`;
       let getStatusPengiriman = `Select sp.*, s.desc_status, k.kota as asal, l.kota as tujuan, d.alamat, d.nama_penerima from status_pengiriman sp join status s on sp.idstatus = s.idstatus join data d on sp.iddata = d.iddata
-      join kota k on k.idkota = d.kota_asal join kota l on l.idkota = d.kota_penerima;`
-      let getStatus = await dbQuery(getStatusPengiriman)
+      join kota k on k.idkota = d.kota_asal join kota l on l.idkota = d.kota_penerima;`;
+      let getStatus = await dbQuery(getStatusPengiriman);
       let get = await dbQuery(getSQL);
-      get.forEach(item => {
-        item.status = []
-        getStatus.forEach(el => {
-          if(item.iddata == el.iddata){
-            item.status.push(el)
+      get.forEach((item) => {
+        item.status = [];
+        getStatus.forEach((el) => {
+          if (item.iddata == el.iddata) {
+            item.status.push(el);
           }
-        })
-      })
+        });
+      });
       res.status(200).send(get);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
   barangTerkirim: async (req, res, next) => {
@@ -169,7 +169,7 @@ module.exports = {
       let get = await dbQuery(getSQL);
       res.status(200).send(get);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  },
 };
