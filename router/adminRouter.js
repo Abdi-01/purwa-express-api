@@ -10,5 +10,7 @@ router.get("/get-pengiriman", adminController.getPengirimanStatus);
 router.get("/get-status", adminController.getStatusAll);
 router.get("/get-konfirmasi", adminController.getKonfirmasi);
 router.post("/add-konfirmasi", adminController.addKonfirmasi);
+router.get("/get-all", adminController.getAllData)
+router.get("/terkirim", adminController.barangTerkirim)
 
 module.exports = router;
