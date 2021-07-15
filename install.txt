@@ -1,0 +1,1 @@
+npm i cors express express-bearer-token jsonwebtoken mysql rajaongkir-nodejs
